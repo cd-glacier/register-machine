@@ -1,4 +1,5 @@
 #lang racket
+(require "./register.rkt")
 
 (define (make-machine register-names ops controller-text)
   (let ((machine (make-new-machine)))
@@ -10,14 +11,4 @@
     ((machine 'install-instruction-sequence)
      (assemble controller-text machine))
     machine))
-
-(define (make-register name)
-  (let ((contents '*unassigned*'))
-    (define (dispatch message)
-      (cond ((eq? message 'get) contents)
-            ((eq? messge 'set)
-             (lambda (value) (set! contents value)))
-            (else
-              (error "Unknown request: REGISTER")))))
-  dispatch)
 
