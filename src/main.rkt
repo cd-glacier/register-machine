@@ -1,5 +1,6 @@
 #lang racket
 (require "./register.rkt")
+(require "./stack.rkt")
 
 (define (make-machine register-names ops controller-text)
   (let ((machine (make-new-machine)))
