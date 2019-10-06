@@ -38,9 +38,10 @@
       (define (execute)
         (let ((insts (get-contents pc)))
           (if (null? insts)
-              'done(begin
-                     ((instruction-execution-proc (car insts)))
-                     (execute)))))
+              'done
+              (begin
+                ((instruction-execution-proc (car insts)))
+                (execute)))))
       (define (dispatch message)
         (cond ((eq? message 'start)
                (set-contents! pc the-instruction-sequence)
