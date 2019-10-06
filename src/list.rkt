@@ -1,5 +1,6 @@
 #lang racket
 
+; TODO: not works
 (define (set-cdr! target li)
   (cond ((list? li) (error "ERROR set-cdr!: arguments is not list"))
         (else (cons (car li) target))))
