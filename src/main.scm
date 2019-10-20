@@ -1,7 +1,47 @@
-#lang racket
-(require "./list.rkt")
-(require "./register.rkt")
-(require "./stack.rkt")
+
+(define true #t)
+(define false #f)
+
+(define (make-register name)
+  (let ((contents '*unassigned*))
+    (define (dispatch message)
+      (cond ((eq? message 'get) contents)
+            ((eq? message 'set)
+             (lambda (value) (set! contents value)))
+            (else
+              (error "Unknown request: REGISTER"))))
+  dispatch))
+
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+    (eq? (car exp) tag)
+    false))
+
+(define (make-stack)
+  (let((s '()))
+    (define (push x) (set! s (cons x s)))
+    (define (pop)
+      (if (null? s)
+          (error "Empty stack: POP")
+          (let ((top (car s)))
+            (set! s (cdr s))
+            top)))
+    (define (initialize)
+      (set! s '())
+      'done)
+    (define (dispatch message)
+      (cond ((eq? message 'push) push)
+            ((eq? message 'pop) (pop))
+            ((eq? message 'initialize) (initialize))
+            (else (error "Unknown request: STACK" message))))
+    dispatch))
+
+(define (pop stack) (stack 'pop))
+(define (push stack value) ((stack 'push) value))
+
+(define (get-contents register) (register 'get))
+(define (set-contents! register value)
+  ((register 'set) value))
 
 (define (make-machine register-names ops controller-text)
   (let ((machine (make-new-machine)))
@@ -287,9 +327,8 @@
        (goto (label test-b))
        gcd-done)))
 
-; (set-register-contents! gcd-machine 'a 206)
-; (set-register-contents! gcd-machine 'b 40)
-; (start gcd-machine)
-; (get-register-contents gcd-machine 'a)
-
+(set-register-contents! gcd-machine 'a 206)
+(set-register-contents! gcd-machine 'b 40)
+(start gcd-machine)
+(print (get-register-contents gcd-machine 'a))
 
